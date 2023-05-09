@@ -1,47 +1,26 @@
 package main
 
 import (
-	"BookStore/common/db"
-	"BookStore/pkg/books"
-	"fmt"
+	"BookStore/db"
+	"BookStore/internal/controllers/books"
+	"BookStore/internal/controllers/users"
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
+	"os"
 )
 
 func main() {
-	viper.SetConfigFile("./common/envs/.env")
-	if err := viper.ReadInConfig(); err != nil {
-		fmt.Printf("Error reading config file, %s", err)
-	}
-
-	port := viper.Get("PORT").(string)
-	dbUrl := viper.Get("DB_URL").(string)
-
 	r := gin.Default()
-	h := db.Init(dbUrl)
 
+	// Инициализируем базу данных на основе GORM;
+	h := db.Init()
+
+	// Регистрируем маршруты приложений
 	books.RegisterRoutes(r, h)
-	// register more routes here
+	users.RegisterRoutes(r, h)
 
+	// Извлекаем переменную окружения PORT
+	port := os.Getenv("PORT")
+
+	// Запускаем сервер на указанном порту
 	r.Run(port)
 }
-
-//viper.SetConfigFile("./common/envs/.env")
-
-////viper.ReadInConfig()
-//
-//port := viper.Get("PORT").(string)
-//dbUrl := viper.Get("DB_URL").(string)
-//
-//r := gin.Default()
-//db.Init(dbUrl)
-//
-//r.GET("/", func(c *gin.Context) {
-//	c.JSON(200, gin.H{
-//		"port":  port,
-//		"dbUrl": dbUrl,
-//	})
-//})
-//
-//r.Run(port)
-//}
