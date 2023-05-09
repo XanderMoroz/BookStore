@@ -1,7 +1,10 @@
 package config
 
-import "github.com/spf13/viper" // Библиотека для работы с переменными окружения
+import (
+	"github.com/spf13/viper"
+) // Библиотека для работы с переменными окружения
 
+// Формируем структуру конфигурации для подключения к базе данных
 type Config struct {
 	Port  string `mapstructure:"PORT"`
 	DBUrl string `mapstructure:"DB_URL"`
