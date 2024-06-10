@@ -1,10 +1,11 @@
 package books
 
 import (
-	"BookStore/internal/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
+	"github.com/XanderMoroz/BookStore/internal/models"
 )
 
 func (h handler) DeleteBook(c *gin.Context) {

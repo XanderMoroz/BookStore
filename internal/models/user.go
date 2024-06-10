@@ -1,11 +1,13 @@
 package models
 
 import (
-	"BookStore/utils/token"
 	"errors"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"net/http"
+
+	"github.com/XanderMoroz/BookStore/utils/token"
 )
 
 var DB *gorm.DB

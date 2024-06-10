@@ -1,14 +1,16 @@
 package books
 
 import (
-	"BookStore/internal/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
+	"github.com/XanderMoroz/BookStore/internal/models"
 )
 
-// Определяем функцию обработчик для получения книги по ID
+// Функция обработчик для получения книги по ID
 func (h handler) GetBook(c *gin.Context) {
+
 	// Извлекаем из контекста значение параметра ID
 	id := c.Param("id")
 

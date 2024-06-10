@@ -6,9 +6,10 @@ import (
 	"net/http"
 	"strings"
 
-	"BookStore/internal/models"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+
+	"github.com/XanderMoroz/BookStore/internal/models"
 )
 
 // Определяем структуру тела запроса на создание пользователя

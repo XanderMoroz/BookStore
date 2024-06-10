@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"BookStore/utils/token"
+	"github.com/XanderMoroz/BookStore/utils/token"
 )
 
 func JwtAuthMiddleware() gin.HandlerFunc {

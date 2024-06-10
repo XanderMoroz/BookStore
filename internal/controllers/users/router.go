@@ -1,10 +1,11 @@
 package users
 
 import (
-	"BookStore/internal/middlewares"
-	"BookStore/internal/models"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+
+	"github.com/XanderMoroz/BookStore/internal/middlewares"
+	"github.com/XanderMoroz/BookStore/internal/models"
 )
 
 // Формируем структуру обработчика базы данных

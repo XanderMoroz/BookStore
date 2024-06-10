@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  mysql:
+    container_name: "mysql"
+    # platform: linux/x86_64 #If are on apple silicon, you need to add this line
+    image: mysql
+    ports:
+      - "${MYSQL_PORT}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+    # volumes:
+    #   - "mysqldb:/var/lib/mysql"
+      # - "mysql/config:/etc/mysql/conf.d:ro"
+      # - "mysql/log:/var/log/mysql"
+    security_opt:
+      - seccomp:unconfined
+
+  phpmyadmin:
+    image: "phpmyadmin"
+    container_name: phpmyadmin
+    ports:
+      - "${phpmyadminPort}:80"
+    environment:
+      - PMA_HOST=${MYSQL_IP_Address}
+      - PMA_PORT=${MYSQL_PORT}
+      - MAX_EXECUTION_TIME=30000
+      - UPLOAD_LIMIT=2048M
+      - MEMORY_LIMIT=2048M
+  
+
+# Список томов
+volumes:
+  db:

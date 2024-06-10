@@ -1,11 +1,13 @@
 package users
 
 import (
-	app_model "BookStore/internal/models"
-	"BookStore/utils/token"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
-	"net/http"
+
+	app_model "github.com/XanderMoroz/BookStore/internal/models"
+	"github.com/XanderMoroz/BookStore/utils/token"
 )
 
 type LoginInput struct {

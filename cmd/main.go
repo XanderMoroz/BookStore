@@ -1,18 +1,18 @@
 package main
 
 import (
-	"BookStore/db"
-	"BookStore/internal/controllers/books"
-	"BookStore/internal/controllers/users"
-	"github.com/gin-gonic/gin"
-
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
-	//_ "github.com/xanderfrost/bookstore/docs/bookstore"
-
 	"log"
 	"net/http"
-	"os"
+
+	"github.com/XanderMoroz/BookStore/config"
+	"github.com/XanderMoroz/BookStore/db"
+	"github.com/XanderMoroz/BookStore/internal/controllers/books"
+	"github.com/XanderMoroz/BookStore/internal/controllers/users"
+	"github.com/gin-gonic/gin"
+
+	_ "github.com/XanderMoroz/BookStore/docs/bookstore"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // @title Gin Swagger Example API
@@ -32,17 +32,18 @@ import (
 // @schemes http
 
 func main() {
+	env := config.NewEnv()
+
 	r := gin.Default()
 
 	// Инициализируем базу данных на основе GORM;
 	h := db.Init()
 
-	// Регистрируем маршруты приложений
+	// db.Init()
+
+	// // Регистрируем маршруты приложений
 	books.RegisterRoutes(r, h)
 	users.RegisterRoutes(r, h)
-
-	// Извлекаем переменную окружения PORT
-	port := os.Getenv("PORT")
 
 	// Routes
 	r.GET("/", HealthCheck)
@@ -51,21 +52,20 @@ func main() {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	// Запускаем сервер на указанном порту
-	if err := r.Run(port); err != nil {
+	if err := r.Run(env.AppPort); err != nil {
 		log.Fatal(err)
 	}
 
-	// HealthCheck godoc
-	// @Summary Show the status of server.
-	// @Description get the status of server.
-	// @Tags root
-	// @Accept */*
-	// @Produce json
-	// @Success 200 {object} map[string]interface{}
-	// @Router / [get]
-
 }
 
+// HealthCheck godoc
+// @Summary Show the status of server.
+// @Description get the status of server.
+// @Tags root
+// @Accept */*
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router / [get]
 func HealthCheck(c *gin.Context) {
 	res := map[string]interface{}{
 		"data": "Server is up and running",
