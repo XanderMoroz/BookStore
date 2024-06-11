@@ -1,0 +1,43 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Testing Swagger APIs.",
+        "title": "BookStore APIs",
+        "termsOfService": "http://swagger.io/terms/// @contact.name API Support",
+        "contact": {
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io// @securityDefinitions.apiKey JWT"
+        },
+        "license": {
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html// @host localhost:8081"
+        },
+        "version": "1.0"
+    },
+    "basePath": "/api/v1",
+    "paths": {
+        "/": {
+            "get": {
+                "description": "get the status of server.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "root"
+                ],
+                "summary": "Show the status of server.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -4,32 +4,29 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/XanderMoroz/BookStore/config"
-	"github.com/XanderMoroz/BookStore/db"
-	"github.com/XanderMoroz/BookStore/internal/controllers/books"
-	"github.com/XanderMoroz/BookStore/internal/controllers/users"
 	"github.com/gin-gonic/gin"
 
-	_ "github.com/XanderMoroz/BookStore/docs/bookstore"
-	swaggerFiles "github.com/swaggo/files"
+	"github.com/XanderMoroz/BookStore/config"
+	"github.com/XanderMoroz/BookStore/db"
+
+	"github.com/XanderMoroz/BookStore/internal/controllers/books"
+	"github.com/XanderMoroz/BookStore/internal/controllers/users"
+
+	_ "github.com/XanderMoroz/BookStore/docs"
+	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @title Gin Swagger Example API
+// @title BookStore APIs
 // @version 1.0
-// @description This is a sample server server.
-// @termsOfService http://swagger.io/terms/
-
-// @contact.name API Support
+// @description Testing Swagger APIs.
+// @termsOfService http://swagger.io/terms/// @contact.name API Support
 // @contact.url http://www.swagger.io/support
-// @contact.email support@swagger.io
-
-// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-
-// @host localhost:3000
-// @BasePath /
-// @schemes http
+// @contact.email support@swagger.io// @securityDefinitions.apiKey JWT
+// @in header
+// @name token// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html// @host localhost:8081
+// @BasePath /api/v1
 
 func main() {
 	env := config.NewEnv()
@@ -45,17 +42,16 @@ func main() {
 	books.RegisterRoutes(r, h)
 	users.RegisterRoutes(r, h)
 
+	// The url pointing to API definition
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
 	// Routes
 	r.GET("/", HealthCheck)
-	// The url pointing to API definition
-	url := ginSwagger.URL("http://localhost:3000/swagger/doc.json")
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	// Запускаем сервер на указанном порту
-	if err := r.Run(env.AppPort); err != nil {
+	if err := r.Run(":" + env.AppPort); err != nil {
 		log.Fatal(err)
 	}
-
 }
 
 // HealthCheck godoc

@@ -1,0 +1,29 @@
+basePath: /api/v1
+info:
+  contact:
+    email: support@swagger.io// @securityDefinitions.apiKey JWT
+    url: http://www.swagger.io/support
+  description: Testing Swagger APIs.
+  license:
+    url: http://www.apache.org/licenses/LICENSE-2.0.html// @host localhost:8081
+  termsOfService: http://swagger.io/terms/// @contact.name API Support
+  title: BookStore APIs
+  version: "1.0"
+paths:
+  /:
+    get:
+      consumes:
+      - '*/*'
+      description: get the status of server.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Show the status of server.
+      tags:
+      - root
+swagger: "2.0"
