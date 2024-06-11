@@ -1,19 +1,63 @@
-basePath: /api/v1
+consumes:
+- '*/*'
+definitions:
+  books.AddBookRequestBody:
+    properties:
+      author:
+        type: string
+      description:
+        type: string
+      title:
+        type: string
+    type: object
+  users.RegisterInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
 info:
   contact:
-    email: support@swagger.io// @securityDefinitions.apiKey JWT
+    email: support@swagger.io
+    name: API Support
     url: http://www.swagger.io/support
   description: Testing Swagger APIs.
-  license:
-    url: http://www.apache.org/licenses/LICENSE-2.0.html// @host localhost:8081
-  termsOfService: http://swagger.io/terms/// @contact.name API Support
+  termsOfService: http://swagger.io/terms/
   title: BookStore APIs
   version: "1.0"
 paths:
-  /:
-    get:
+  /books:
+    post:
       consumes:
-      - '*/*'
+      - application/json
+      description: Creating Book in DB with given request body
+      parameters:
+      - description: Введите данные статьи
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/books.AddBookRequestBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: create new Book
+      tags:
+      - Books
+  /healthcheck:
+    get:
       description: get the status of server.
       produces:
       - application/json
@@ -26,4 +70,35 @@ paths:
       summary: Show the status of server.
       tags:
       - root
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Register User in app with given request body
+      parameters:
+      - description: Введите данные для регистрации
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/users.RegisterInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: user registration
+      tags:
+      - Authentication
+securityDefinitions:
+  JWT:
+    in: header
+    name: token//
+    type: apiKey
 swagger: "2.0"

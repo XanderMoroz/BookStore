@@ -17,7 +17,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	h := &handler{
 		DB: db,
 	}
-	routes := r.Group("/books")
+	routes := r.Group("/api/v1/books")
 
 	routes.POST("/", h.AddBook)         // Создание новой книги
 	routes.GET("/", h.GetBooks)         // Извлечение списка всех книг

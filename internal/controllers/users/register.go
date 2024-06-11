@@ -18,14 +18,27 @@ type RegisterInput struct {
 	Password string `json:"password" binding:"required"`
 }
 
+// @Summary			user registration
+// @Description		Register User in app with given request body
+// @Tags			Authentication
+// @Accept			json
+// @Produce			json
+// @Param			request				body		RegisterInput	true	"Введите данные для регистрации"
+// @Success			201					{string}	map[string]string
+// @Failure			400					{string}	string	"Bad Request"
+// @Router			/users/register 	[post]
 func (h handler) Register(c *gin.Context) {
 
+	log.Println("Поступил запрс на регистрацию в сервисе")
 	request := RegisterInput{}
 
 	// Пытаемся получить тело запроса
 	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"body parsing error": err.Error()})
 		return
+	} else {
+		log.Println("Тело запроса успешно извлечено:")
+		log.Printf("Username: <%v>\n Password: <%v>\n", request.Username, request.Password)
 	}
 	// Создаем новый экземпляр пользователя
 	u := models.User{}
@@ -38,19 +51,20 @@ func (h handler) Register(c *gin.Context) {
 	if err != nil {
 		log.Println("Ошибка шифрования пароля")
 		return
+	} else {
+		log.Printf("Пароль успешно зашифрован: <%v>\n", hashedPassword)
 	}
 	u.Password = string(hashedPassword)
 
-	// Пытаемся создать нового пользователя
+	log.Println("Добавляем нового пользователя в БД...")
 	newUser := h.DB.Create(&u)
-
-	// Обрабатываем ошибку
 	if newUser.Error != nil {
+		// Обрабатываем ошибку
+		log.Fatal("Пользователя создать не удалось", newUser.Error)
 		c.AbortWithError(http.StatusNotFound, newUser.Error)
 		return
 	}
 
 	// Отправляем в контекст сообщение об успешном создании экземпляра книги
 	c.JSON(http.StatusCreated, &newUser)
-
 }

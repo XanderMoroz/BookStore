@@ -15,7 +15,15 @@ type AddBookRequestBody struct {
 	Description string `json:"description"`
 }
 
-// Определяем функцию обработчик для создания нового экземпляра книги
+// @Summary        create new Book
+// @Description    Creating Book in DB with given request body
+// @Tags           Books
+// @Accept         json
+// @Produce        json
+// @Param          request         	body        AddBookRequestBody    true    "Введите данные статьи"
+// @Success        201              {string}    string
+// @Failure        400              {string}    string    "Bad Request"
+// @Router         /books 			[post]
 func (h handler) AddBook(c *gin.Context) {
 	body := AddBookRequestBody{}
 

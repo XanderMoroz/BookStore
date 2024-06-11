@@ -17,16 +17,20 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @title BookStore APIs
-// @version 1.0
-// @description Testing Swagger APIs.
-// @termsOfService http://swagger.io/terms/// @contact.name API Support
-// @contact.url http://www.swagger.io/support
-// @contact.email support@swagger.io// @securityDefinitions.apiKey JWT
-// @in header
-// @name token// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html// @host localhost:8081
-// @BasePath /api/v1
+//	@title			BookStore APIs
+//	@version		1.0
+//	@description	Testing Swagger APIs.
+//	@termsOfService	http://swagger.io/terms/
+// 	@contact.name API Support
+//	@contact.url	http://www.swagger.io/support
+//	@contact.email	support@swagger.io
+// 	@securityDefinitions.apiKey JWT
+//	@in				header
+//	@name			token//
+//	@license.name Apache 2.0
+//	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html//
+//	@host localhost:8082
+//	@BasePath		/api/v1/
 
 func main() {
 	env := config.NewEnv()
@@ -36,32 +40,30 @@ func main() {
 	// Инициализируем базу данных на основе GORM;
 	h := db.Init()
 
-	// db.Init()
-
-	// // Регистрируем маршруты приложений
-	books.RegisterRoutes(r, h)
-	users.RegisterRoutes(r, h)
+	// Routes
+	r.GET("/healthcheck", HealthCheck)
 
 	// The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
-	// Routes
-	r.GET("/", HealthCheck)
-
+	// // Регистрируем маршруты приложений
+	books.RegisterRoutes(r, h)
+	users.RegisterRoutes(r, h)
 	// Запускаем сервер на указанном порту
 	if err := r.Run(":" + env.AppPort); err != nil {
 		log.Fatal(err)
 	}
+	//	@Accept			*/*
 }
 
 // HealthCheck godoc
-// @Summary Show the status of server.
-// @Description get the status of server.
-// @Tags root
-// @Accept */*
-// @Produce json
-// @Success 200 {object} map[string]interface{}
-// @Router / [get]
+//
+//	@Summary		Show the status of server.
+//	@Description	get the status of server.
+//	@Tags			root
+//	@Produce		json
+//	@Success		200	{object}	map[string]interface{}
+//	@Router			/healthcheck [get]
 func HealthCheck(c *gin.Context) {
 	res := map[string]interface{}{
 		"data": "Server is up and running",

@@ -12,6 +12,18 @@ import (
 
 var DB *gorm.DB
 
+// type User struct {
+// 	gorm.Model
+// 	ID        uuid.UUID `gorm:"type:uuid"`
+// 	Username  string    `gorm:"not null"`
+// 	Email     string    `gorm:"uniqueIndex"`
+// 	Password  []byte    `json:"-"` // contain the hashed password.
+// 	CreatedAt time.Time `gorm:"autoCreateTime"`
+// 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+// 	// DeletedAt gorm.DeletedAt
+// 	// Articles  []Article `gorm:"foreignKey:UserID"`
+// }
+
 type User struct {
 	gorm.Model
 	Username string `gorm:"size:255;not null;unique" json:"username"`
