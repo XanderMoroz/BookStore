@@ -1,6 +1,7 @@
 package books
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -27,12 +28,16 @@ func (h handler) GetBook(c *gin.Context) {
 
 	// Пытаемся найти экземпляр книги с полученным значением ID
 	if result := h.DB.First(&book, id); result.Error != nil {
-		// c.AbortWithError(http.StatusNotFound, result.Error)
 		c.JSON(http.StatusNotFound, gin.H{
 			"success": false,
 			"message": "Book Not Found",
 		})
 		return
+	} else {
+		log.Println("Книга - успешно извлечена:")
+		log.Printf("Author: <%v>\n", book.Author)
+		log.Printf("Title: <%v>\n", book.Title)
+		log.Printf("Description: <%v>\n", book.Description)
 	}
 
 	// Отправляем в контекст экземпляр книги

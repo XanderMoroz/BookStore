@@ -17,6 +17,24 @@ definitions:
       title:
         type: string
     type: object
+  models.UpdateBookRequestBody:
+    properties:
+      author:
+        type: string
+      description:
+        type: string
+      title:
+        type: string
+    type: object
+  models.UserResponse:
+    properties:
+      id:
+        type: integer
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   users.LoginInput:
     properties:
       password:
@@ -27,13 +45,16 @@ definitions:
     - password
     - username
     type: object
-  users.RegisterInput:
+  users.SignUpUserRequest:
     properties:
+      name:
+        type: string
       password:
         type: string
       username:
         type: string
     required:
+    - name
     - password
     - username
     type: object
@@ -61,6 +82,20 @@ paths:
       summary: Show the status of server.
       tags:
       - root
+  /api/admin/user:
+    get:
+      description: Get token from users cookee
+      operationId: get-current-user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+      summary: get current user
+      tags:
+      - Authentication
   /books:
     get:
       description: Get all books from db
@@ -105,6 +140,33 @@ paths:
       tags:
       - Books
   /books/{id}:
+    delete:
+      description: Delete a book by ID
+      operationId: delete-book-by-id
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            items:
+              type: string
+            type: array
+      summary: delete a book by ID
+      tags:
+      - Books
     get:
       description: Get an book by ID
       operationId: get-book-by-id
@@ -128,6 +190,39 @@ paths:
               type: string
             type: array
       summary: get an book by ID
+      tags:
+      - Books
+    put:
+      description: Update book by ID
+      operationId: delete-book-by-id
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Введите новые данные книги
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateBookRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            items:
+              type: string
+            type: array
+      summary: update book by ID
       tags:
       - Books
   /users/login:
@@ -167,7 +262,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/users.RegisterInput'
+          $ref: '#/definitions/users.SignUpUserRequest'
       produces:
       - application/json
       responses:

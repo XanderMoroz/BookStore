@@ -7,15 +7,17 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/XanderMoroz/BookStore/internal/models"
 )
 
 // Определяем структуру тела запроса на создание пользователя
-type RegisterInput struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
+type SignUpUserRequest struct {
+	Name     string `json:"name" validate:"required"`
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required"`
 }
 
 // @Summary			user registration
@@ -23,14 +25,15 @@ type RegisterInput struct {
 // @Tags			Authentication
 // @Accept			json
 // @Produce			json
-// @Param			request				body		RegisterInput	true	"Введите данные для регистрации"
+// @Param			request				body		SignUpUserRequest	true	"Введите данные для регистрации"
 // @Success			201					{string}	map[string]string
 // @Failure			400					{string}	string	"Bad Request"
 // @Router			/users/register 	[post]
 func (h handler) Register(c *gin.Context) {
 
 	log.Println("Поступил запрс на регистрацию в сервисе")
-	request := RegisterInput{}
+
+	request := SignUpUserRequest{}
 
 	// Пытаемся получить тело запроса
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -40,11 +43,12 @@ func (h handler) Register(c *gin.Context) {
 		log.Println("Тело запроса успешно извлечено:")
 		log.Printf("Username: <%v>\n Password: <%v>\n", request.Username, request.Password)
 	}
+
 	// Создаем новый экземпляр пользователя
-	u := models.User{}
+	newUser := models.User{}
 
 	// Чистим и присваиваем ему значения из тела запроса
-	u.Username = html.EscapeString(strings.TrimSpace(request.Username))
+	newUser.Username = html.EscapeString(strings.TrimSpace(request.Username))
 
 	// Шифруем пароль из запроса
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
@@ -54,22 +58,34 @@ func (h handler) Register(c *gin.Context) {
 	} else {
 		log.Printf("Пароль успешно зашифрован: <%v>\n", hashedPassword)
 	}
-	u.Password = string(hashedPassword)
 
-	log.Println("Добавляем нового пользователя в БД...")
-	newUser := h.DB.Create(&u)
-	if newUser.Error != nil {
-		c.JSON(http.StatusBadRequest, newUser.Error.Error())
+	// Присваиваем новому пользователю уникальный ID
+	newUser.ID = uuid.New()
+	newUser.Name = request.Name
+	newUser.Password = hashedPassword
+
+	log.Printf("Добавляем в БД нового пользователя:")
+	log.Printf("	ID: <%+v>\n", newUser.ID)
+	log.Printf("	Имя: <%+v>\n", newUser.Name)
+	log.Printf("	Username: <%+v>\n", newUser.Username)
+	log.Printf("	hashedPassword: <%s>\n", string(hashedPassword))
+
+	result := h.DB.Create(&newUser)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, result.Error.Error())
 		return
 	} else {
 		log.Println("Новый пользователь успешно зарегистрирован")
-		log.Printf("ID: <%v>\n", u.ID)
-		log.Printf("Псевдоним: <%s>\n", u.Username)
-		log.Printf("Хэш-пароль: <%s>\n", u.Password)
+		log.Printf("	ID: <%v>\n", newUser.ID)
+		log.Printf("	Имя: <%+v>\n", newUser.Name)
+		log.Printf("	Username: <%s>\n", newUser.Username)
+		log.Printf("	Хэш-пароль: <%s>\n", string(newUser.Password))
 	}
 
 	// Отправляем в контекст сообщение об успешном создании экземпляра книги
-	// c.JSON(http.StatusCreated, gin.H{"new_user": &u})
-	c.JSON(http.StatusCreated, &u)
+	c.JSON(http.StatusCreated, gin.H{
+		"success":  true,
+		"new_user": &newUser,
+	})
 
 }

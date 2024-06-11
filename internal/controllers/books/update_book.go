@@ -8,17 +8,19 @@ import (
 	"github.com/XanderMoroz/BookStore/internal/models"
 )
 
-// Определяем структуру тела запроса на создание экземпляра книги
-type UpdateBookRequestBody struct {
-	Title       string `json:"title"`
-	Author      string `json:"author"`
-	Description string `json:"description"`
-}
-
-// Определяем функцию обработчик для создания нового экземпляра
+// @Summary			update book by ID
+// @Description 	Update book by ID
+// @ID				delete-book-by-id
+// @Tags 			Books
+// @Produce			json
+// @Param			id					path		int								true	"Book ID"
+// @Param           request         	body        models.UpdateBookRequestBody    true    "Введите новые данные книги"
+// @Success			200	{object}	[]string
+// @Failure			404	{object}	[]string
+// @Router			/books/{id} 	[put]
 func (h handler) UpdateBook(c *gin.Context) {
 	id := c.Param("id")
-	body := UpdateBookRequestBody{}
+	body := models.UpdateBookRequestBody{}
 
 	// Пытаемся получить тело запроса
 	if err := c.BindJSON(&body); err != nil {

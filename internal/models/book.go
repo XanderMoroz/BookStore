@@ -14,3 +14,10 @@ type BookResponse struct {
 	Author      string `json:"author"`
 	Description string `json:"description"`
 }
+
+// Определяем структуру тела запроса на создание экземпляра книги
+type UpdateBookRequestBody struct {
+	Title       string `json:"title"`
+	Author      string `json:"author"`
+	Description string `json:"description"`
+}

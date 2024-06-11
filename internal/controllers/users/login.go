@@ -5,10 +5,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 
-	app_model "github.com/XanderMoroz/BookStore/internal/models"
-	"github.com/XanderMoroz/BookStore/utils/token"
+	"github.com/XanderMoroz/BookStore/internal/models"
+	"github.com/XanderMoroz/BookStore/utils"
 )
 
 type LoginInput struct {
@@ -38,65 +39,117 @@ func (h handler) Login(c *gin.Context) {
 		log.Printf("Username: <%s>\n Password: <%s>\n", loginBody.Username, loginBody.Password)
 	}
 
-	u := app_model.User{}
-
-	u.Username = loginBody.Username
-	u.Password = loginBody.Password
-
-	token, err := h.LoginCheck(u.Username, u.Password)
-
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "username or password is incorrect."})
+	// Check if user exists
+	var user models.User
+	var defaulUserID uuid.UUID
+	h.DB.Where("username = ?", loginBody.Username).First(&user)
+	if user.ID == defaulUserID {
+		log.Println("User not found")
+		c.JSON(http.StatusNotFound, gin.H{
+			"success": false,
+			"message": "User not found",
+		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
-
-}
-
-func (h handler) LoginCheck(username string, password string) (string, error) {
-
-	log.Println("Проверяем данные пользователя...")
-	var err error
-
-	u := app_model.User{}
-
-	err = h.DB.Model(app_model.User{}).Where("username = ?", username).Take(&u).Error
-
-	if err != nil {
-		log.Printf("... ошибка: <%v>", err)
-		return "", err
-	} else {
-		log.Println("Пользователь - успешно извлечен:")
-		log.Printf("Username: <%s>\n Password: <%s>\n", u.Username, u.Password)
-	}
-
-	err = VerifyPassword(password, u.Password)
-	if err != nil {
-		log.Printf("... ошибка: <%v>", err)
-		return "", err
-	}
-
-	newToken, err := token.GenerateToken(u.ID)
-
-	if err != nil {
-		log.Printf("... ошибка: <%v>", err)
-		return "", err
-	}
-
-	return newToken, nil
-
-}
-
-func VerifyPassword(password, hashedPassword string) error {
-
 	log.Println("Верифицируем пароль...")
-	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(loginBody.Password), bcrypt.DefaultCost)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"success": false,
+			"message": "Failed to hash password",
+		})
+		return
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(loginBody.Password))
 	if err != nil {
 		log.Println("Invalid Password:", err)
-		return err
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"success": false,
+			"message": "Invalid Password",
+		})
+		return
 	}
-	log.Println("... Пароль успешно верифицирован")
-	return nil
+	log.Println("... успешно")
+
+	log.Println("Генерируем токен доступа...")
+
+	token, err := utils.GenerateToken(user.ID)
+	if err != nil {
+		log.Println("Error:", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"success": false,
+			"message": "Failed to generate token",
+		})
+		return
+	} else {
+		log.Println("... успешно:", token)
+	}
+
+	log.Println("Устанавливаем токен в куки пользователя...")
+	c.SetCookie("jwt", token, 3600, "/", "127.0.0.1", false, true)
+
+	log.Println("... успешно")
+
+	// log.Println("Извлекаем токен из куков пользователя...")
+	// cookie, err := c.Cookie("jwt")
+	// if err != nil {
+	// 	c.String(http.StatusNotFound, err.Error())
+	// 	return
+	// }
+	// log.Println(cookie)
+
+	c.JSON(http.StatusOK, gin.H{
+		"success":      true,
+		"message":      "Token Created",
+		"access_token": token,
+	})
 
 }
+
+// func (h handler) LoginCheck(username string, password string) (string, error) {
+
+// 	log.Println("Проверяем данные пользователя...")
+// 	var err error
+
+// 	u := models.User{}
+
+// 	err = h.DB.Model(models.User{}).Where("username = ?", username).Take(&u).Error
+
+// 	if err != nil {
+// 		log.Printf("... ошибка: <%v>", err)
+// 		return "", err
+// 	} else {
+// 		log.Println("Пользователь - успешно извлечен:")
+// 		log.Printf("Username: <%s>\n Password: <%s>\n", u.Username, u.Password)
+// 	}
+
+// 	// err = VerifyPassword(password, u.Password)
+// 	// if err != nil {
+// 	// 	log.Printf("... ошибка: <%v>", err)
+// 	// 	return "", err
+// 	// }
+
+// 	// newToken, err := utils.GenerateToken(u.ID)
+
+// 	// if err != nil {
+// 	// 	log.Printf("... ошибка: <%v>", err)
+// 	// 	return "", err
+// 	// }
+
+// 	// return newToken, nil
+
+// }
+
+// func VerifyPassword(password, hashedPassword string) error {
+
+// 	log.Println("Верифицируем пароль...")
+// 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+// 	if err != nil {
+// 		log.Println("Invalid Password:", err)
+// 		return err
+// 	}
+// 	log.Println("... Пароль успешно верифицирован")
+// 	return nil
+
+// }
