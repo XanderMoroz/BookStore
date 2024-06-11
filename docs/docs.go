@@ -42,7 +42,34 @@ const docTemplate = `{
             }
         },
         "/books": {
+            "get": {
+                "description": "Get all books from db",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Books"
+                ],
+                "summary": "get all books",
+                "operationId": "get-all-books",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.BookResponse"
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
                 "description": "Creating Book in DB with given request body",
                 "consumes": [
                     "application/json"
@@ -76,6 +103,45 @@ const docTemplate = `{
                         "description": "Bad Request",
                         "schema": {
                             "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/books/{id}": {
+            "get": {
+                "description": "Get an book by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Books"
+                ],
+                "summary": "get an book by ID",
+                "operationId": "get-book-by-id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.BookResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -177,6 +243,20 @@ const docTemplate = `{
                 }
             }
         },
+        "models.BookResponse": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "users.LoginInput": {
             "type": "object",
             "required": [
@@ -211,7 +291,7 @@ const docTemplate = `{
     "securityDefinitions": {
         "JWT": {
             "type": "apiKey",
-            "name": "token//",
+            "name": "token",
             "in": "header"
         }
     }

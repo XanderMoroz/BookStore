@@ -22,7 +22,6 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	}
 	routes := r.Group("/users")
 
-	//routes.POST("/", h.AddBook)
 	routes.POST("/register", h.Register) // Создание нового пользователя
 	routes.POST("/login", h.Login)
 

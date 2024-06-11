@@ -23,6 +23,10 @@ type AddBookRequestBody struct {
 // @Param          request         	body        AddBookRequestBody    true    "Введите данные статьи"
 // @Success        201              {string}    string
 // @Failure        400              {string}    string    "Bad Request"
+// @securityDefinitions.apiKey token
+// @in				header
+// @name			Authorization
+// @Security		JWT
 // @Router         /books 			[post]
 func (h handler) AddBook(c *gin.Context) {
 	body := AddBookRequestBody{}

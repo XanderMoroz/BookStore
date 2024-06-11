@@ -8,7 +8,15 @@ import (
 	"github.com/XanderMoroz/BookStore/internal/models"
 )
 
-// Функция обработчик для получения книги по ID
+// @Summary		get an book by ID
+// @Description Get an book by ID
+// @Tags 		Books
+// @ID			get-book-by-id
+// @Produce		json
+// @Param		id				path		string					true	"Book ID"
+// @Success		200				{object}	models.BookResponse
+// @Failure		404				{object}	[]string
+// @Router		/books/{id} 	[get]
 func (h handler) GetBook(c *gin.Context) {
 
 	// Извлекаем из контекста значение параметра ID
@@ -19,7 +27,11 @@ func (h handler) GetBook(c *gin.Context) {
 
 	// Пытаемся найти экземпляр книги с полученным значением ID
 	if result := h.DB.First(&book, id); result.Error != nil {
-		c.AbortWithError(http.StatusNotFound, result.Error)
+		// c.AbortWithError(http.StatusNotFound, result.Error)
+		c.JSON(http.StatusNotFound, gin.H{
+			"success": false,
+			"message": "Book Not Found",
+		})
 		return
 	}
 

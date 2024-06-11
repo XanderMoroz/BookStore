@@ -8,7 +8,13 @@ import (
 	"github.com/XanderMoroz/BookStore/internal/models"
 )
 
-// Определяем функцию обработчик для получения списка
+// @Summary		get all books
+// @Description Get all books from db
+// @Tags 		Books
+// @ID			get-all-books
+// @Produce		json
+// @Success		200		{object}	[]models.BookResponse
+// @Router		/books [get]
 func (h handler) GetBooks(c *gin.Context) {
 
 	// Создаем пустой срез экземпляров

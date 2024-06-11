@@ -8,3 +8,9 @@ type Book struct {
 	Author      string `json:"author"`
 	Description string `json:"description"`
 }
+
+type BookResponse struct {
+	Title       string `json:"title"`
+	Author      string `json:"author"`
+	Description string `json:"description"`
+}

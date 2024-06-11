@@ -16,8 +16,6 @@ type LoginInput struct {
 	Password string `json:"password" binding:"required"`
 }
 
-// nicab
-
 // @Summary        user authentication
 // @Description    Authenticate User in app with given request body
 // @Tags           Authentication
