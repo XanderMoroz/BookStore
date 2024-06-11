@@ -20,7 +20,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	h := &handler{
 		DB: db,
 	}
-	routes := r.Group("/api/v1/users")
+	routes := r.Group("/users")
 
 	//routes.POST("/", h.AddBook)
 	routes.POST("/register", h.Register) // Создание нового пользователя

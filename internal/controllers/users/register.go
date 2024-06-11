@@ -59,12 +59,15 @@ func (h handler) Register(c *gin.Context) {
 	log.Println("Добавляем нового пользователя в БД...")
 	newUser := h.DB.Create(&u)
 	if newUser.Error != nil {
-		// Обрабатываем ошибку
-		log.Fatal("Пользователя создать не удалось", newUser.Error)
-		c.AbortWithError(http.StatusNotFound, newUser.Error)
+		c.JSON(http.StatusBadRequest, newUser.Error.Error())
 		return
+	} else {
+		log.Println("Новый пользователь успешно зарегистрирован")
+		log.Printf("ID: <%v>\n", u.ID)
+		log.Printf("Псевдоним: <%s>\n", u.Username)
+		log.Printf("Хэш-пароль: <%s>\n", u.Password)
 	}
 
 	// Отправляем в контекст сообщение об успешном создании экземпляра книги
-	c.JSON(http.StatusCreated, &newUser)
+	c.JSON(http.StatusCreated, &u)
 }

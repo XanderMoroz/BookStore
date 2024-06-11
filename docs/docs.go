@@ -5,9 +5,6 @@ import "github.com/swaggo/swag"
 
 const docTemplate = `{
     "schemes": {{ marshal .Schemes }},
-    "consumes": [
-        "*/*"
-    ],
     "swagger": "2.0",
     "info": {
         "description": "{{escape .Description}}",
@@ -23,6 +20,27 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/": {
+            "get": {
+                "description": "get the status of server.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "root"
+                ],
+                "summary": "Show the status of server.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/books": {
             "post": {
                 "description": "Creating Book in DB with given request body",
@@ -58,27 +76,6 @@ const docTemplate = `{
                         "description": "Bad Request",
                         "schema": {
                             "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/healthcheck": {
-            "get": {
-                "description": "get the status of server.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "root"
-                ],
-                "summary": "Show the status of server.",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
                         }
                     }
                 }

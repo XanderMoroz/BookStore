@@ -1,5 +1,3 @@
-consumes:
-- '*/*'
 definitions:
   books.AddBookRequestBody:
     properties:
@@ -30,6 +28,20 @@ info:
   title: BookStore APIs
   version: "1.0"
 paths:
+  /:
+    get:
+      description: get the status of server.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Show the status of server.
+      tags:
+      - root
   /books:
     post:
       consumes:
@@ -56,20 +68,6 @@ paths:
       summary: create new Book
       tags:
       - Books
-  /healthcheck:
-    get:
-      description: get the status of server.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Show the status of server.
-      tags:
-      - root
   /users/register:
     post:
       consumes:
