@@ -8,6 +8,16 @@ definitions:
       title:
         type: string
     type: object
+  users.LoginInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
   users.RegisterInput:
     properties:
       password:
@@ -68,6 +78,32 @@ paths:
       summary: create new Book
       tags:
       - Books
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate User in app with given request body
+      parameters:
+      - description: Введите данные для авторизации
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/users.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: user authentication
+      tags:
+      - Authentication
   /users/register:
     post:
       consumes:

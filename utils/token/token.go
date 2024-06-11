@@ -2,30 +2,35 @@ package token
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/XanderMoroz/BookStore/config"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
 func GenerateToken(user_id uint) (string, error) {
 
-	token_lifespan, err := strconv.Atoi(os.Getenv("TOKEN_HOUR_LIFESPAN"))
+	log.Println("Начинаем генерацию токена доступа...")
 
-	if err != nil {
-		return "", err
-	}
+	env := config.NewEnv()
+	// token_lifespan, err := strconv.Atoi(env.AccessTokenExpiryHour)
+
+	// if err != nil {
+	// 	return "", err
+	// }
 
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
 	claims["user_id"] = user_id
-	claims["exp"] = time.Now().Add(time.Hour * time.Duration(token_lifespan)).Unix()
+	claims["exp"] = time.Now().Add(time.Hour * time.Duration(env.AccessTokenExpiryHour)).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString([]byte(os.Getenv("API_SECRET")))
+	return token.SignedString([]byte(env.AccessTokenSecret))
 
 }
 

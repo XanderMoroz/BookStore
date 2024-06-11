@@ -22,7 +22,7 @@ func Init() *gorm.DB {
 	env := config.NewEnv()
 
 	DSN := fmt.Sprintf(
-		"%s:%s@tcp(%s:%s)/%s?",
+		"%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		env.DBUser,
 		env.DBPass,
 		env.DBHost,

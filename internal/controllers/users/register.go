@@ -69,5 +69,7 @@ func (h handler) Register(c *gin.Context) {
 	}
 
 	// Отправляем в контекст сообщение об успешном создании экземпляра книги
+	// c.JSON(http.StatusCreated, gin.H{"new_user": &u})
 	c.JSON(http.StatusCreated, &u)
+
 }
