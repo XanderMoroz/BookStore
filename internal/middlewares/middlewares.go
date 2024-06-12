@@ -15,6 +15,7 @@ func JwtAuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+		c.Header("new-token", "123")
 		c.Next()
 	}
 }
