@@ -25,10 +25,5 @@ func (h handler) CurrentUser(c *gin.Context) {
 
 	currentUser := utils.GetUserByIDFromDB(user_id)
 
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	c.JSON(http.StatusOK, gin.H{"message": "success", "data": currentUser})
 }
