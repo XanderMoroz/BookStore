@@ -24,6 +24,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 
 	routes.POST("/register", h.Register) // Создание нового пользователя
 	routes.POST("/login", h.Login)
+	routes.POST("/login", h.Logout)
 
 	protected := r.Group("/api/admin")
 	protected.Use(middlewares.JwtAuthMiddleware())

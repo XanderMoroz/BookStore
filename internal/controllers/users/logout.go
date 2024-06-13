@@ -2,9 +2,9 @@ package users
 
 import (
 	"log"
-	"time"
+	"net/http"
 
-	"github.com/gofiber/fiber"
+	"github.com/gin-gonic/gin"
 )
 
 // @Summary		logout current user
@@ -13,23 +13,19 @@ import (
 // @ID			logout-current-user
 // @Produce		json
 // @Success		200		{string}	map[]
-// @Router		/api/v1/logout [get]
-func Logout(c *fiber.Ctx) error {
+// @Router		/users/logout [get]
+func (h handler) Logout(c *gin.Context) {
 	log.Println("Получен запрос на выход из аккаунта")
 
-	log.Println("Удаляем токен из куков...")
-	cookie := fiber.Cookie{
-		Name:     "jwt",
-		Value:    "",
-		Expires:  time.Now().Add(-time.Hour), // Expired 1 hour ago
-		HTTPOnly: true,
-		Secure:   true,
-	}
-	c.Cookie(&cookie)
+	log.Println("Удаляем токен из куки пользователя...")
+	c.SetCookie("jwt", "", 3600, "/", "127.0.0.1", false, true)
 	log.Println("... успешно")
 
 	// Return success response indicating logout was successful
-	return c.Status(fiber.StatusAccepted).JSON(fiber.Map{
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
 		"message": "Logout successful",
 	})
+
+	return
 }

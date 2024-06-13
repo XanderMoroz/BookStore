@@ -104,7 +104,6 @@ func (h handler) Login(c *gin.Context) {
 		"message":      "Token Created",
 		"access_token": token,
 	})
-
 }
 
 // func (h handler) LoginCheck(username string, password string) (string, error) {
