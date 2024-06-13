@@ -5,7 +5,6 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/XanderMoroz/BookStore/internal/middlewares"
-	"github.com/XanderMoroz/BookStore/internal/models"
 )
 
 // Формируем структуру обработчика базы данных
@@ -24,10 +23,10 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 
 	routes.POST("/register", h.Register) // Создание нового пользователя
 	routes.POST("/login", h.Login)
-	routes.POST("/login", h.Logout)
+	routes.GET("/logout", h.Logout)
 
 	protected := r.Group("/api/admin")
 	protected.Use(middlewares.JwtAuthMiddleware())
-	protected.GET("/user", models.CurrentUser)
+	protected.GET("/user", h.CurrentUser)
 
 }

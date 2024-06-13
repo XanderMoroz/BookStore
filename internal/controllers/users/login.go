@@ -9,7 +9,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/XanderMoroz/BookStore/internal/models"
-	"github.com/XanderMoroz/BookStore/utils"
+	"github.com/XanderMoroz/BookStore/internal/utils"
 )
 
 type LoginInput struct {

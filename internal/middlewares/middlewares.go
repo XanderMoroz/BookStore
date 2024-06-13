@@ -3,7 +3,7 @@ package middlewares
 import (
 	"net/http"
 
-	"github.com/XanderMoroz/BookStore/utils"
+	"github.com/XanderMoroz/BookStore/internal/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,7 +15,6 @@ func JwtAuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		c.Header("new-token", "123")
 		c.Next()
 	}
 }

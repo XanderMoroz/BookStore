@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -84,64 +82,42 @@ func TokenValid(c *gin.Context) error {
 	} else {
 		log.Printf("USER_ID: <%s>\n", userID)
 	}
-
-	// tokenString := ExtractToken(c)
-	// log.Println("Токен...", tokenString)
-
-	// _, err = jwt.Parse(jwtFromCookie, func(token *jwt.Token) (interface{}, error) {
-	// 	if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-	// 		return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-	// 	}
-	// 	env := config.NewEnv()
-	// 	return []byte(env.AccessTokenSecret), nil
-	// })
-	// if err != nil {
-	// 	return err
-	// }
 	return nil
 }
 
-func ExtractToken(c *gin.Context) string {
-	log.Println("Извлекаем токен из Query...")
+func ExtractUserIDFromToken(c *gin.Context) (string, error) {
+
 	jwtFromCookie, err := c.Cookie("jwt")
 	if err != nil {
 		c.String(http.StatusNotFound, err.Error())
-		return jwtFromCookie
+		// return jwtFromCookie
 	}
-
-	log.Println("Извлекаем токен из заголовка...")
-	bearerToken := c.Request.Header.Get("Authorization")
-	if len(strings.Split(bearerToken, " ")) == 2 {
-		log.Println("...успешно: ", bearerToken)
-		return strings.Split(bearerToken, " ")[1]
-	}
-	return ""
-}
-
-func ExtractTokenID(c *gin.Context) (uint, error) {
-
 	env := config.NewEnv()
-	tokenString := ExtractToken(c)
+	hmacSecret := []byte(env.AccessTokenSecret)
 
-	log.Println("Извлекаем данные из токена: ", tokenString)
-
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
-		}
-		return []byte(env.AccessTokenSecret), nil
+	token, err := jwt.Parse(jwtFromCookie, func(token *jwt.Token) (interface{}, error) {
+		// Проверяем метод подписи токена и другие параметры
+		return hmacSecret, nil
 	})
+
 	if err != nil {
-		log.Println("Ошибка при извлечении данных из токена: ", err)
-		return 0, err
+		// log.Printf("При извлечении токена произошла ошибка <%v>\n", err)
+		return "", fmt.Errorf("failed to parse token: %v", err)
 	}
+
 	claims, ok := token.Claims.(jwt.MapClaims)
-	if ok && token.Valid {
-		uid, err := strconv.ParseUint(fmt.Sprintf("%.0f", claims["user_id"]), 10, 32)
-		if err != nil {
-			return 0, err
-		}
-		return uint(uid), nil
+	if !ok {
+		log.Println("Неверный JWT токен")
+		return "", fmt.Errorf("invalid JWT Token ")
 	}
-	return 0, nil
+
+	userID, ok := claims["user_id"].(string)
+	if !ok {
+		log.Println("Не удалось извлечь USER_ID из токена")
+		return "", fmt.Errorf("failed to parse claims")
+	} else {
+		log.Printf("USER_ID: <%s>\n", userID)
+		return userID, nil
+	}
+
 }
