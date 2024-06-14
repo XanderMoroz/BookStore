@@ -60,39 +60,79 @@ func (h handler) AddOrder(c *gin.Context) {
 	c.JSON(http.StatusCreated, &newOrder)
 }
 
-// @Summary		get an book by ID
-// @Description Get an book by ID
-// @Tags 		Books
-// @ID			get-book-by-id
+// @Summary		get all my orders
+// @Description Get all my orders from db
+// @Tags 		Orders
+// @ID			get-all-my-orders
 // @Produce		json
-// @Param		id				path		string					true	"Book ID"
-// @Success		200				{object}	models.BookResponse
+// @Success		200				{object}	[]models.OrderResponse
+// @Router		/user/orders 	[get]
+func (h handler) GetMyOrders(c *gin.Context) {
+
+	user_id, err := utils.ExtractUserIDFromToken(c)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	currentUser := utils.GetUserByIDFromDB(user_id)
+
+	// Создаем пустой срез экземпляров
+	var orders []models.Order
+
+	// Пытаемся найти экземпляры
+	if result := h.DB.Preload("User").Preload("Items").Find(&orders, "user_id = ?", currentUser.ID); result.Error != nil {
+		c.AbortWithError(http.StatusNotFound, result.Error)
+		return
+	} else {
+		log.Println("Удалось извлеч")
+	}
+	// Отправляем в контекст список экземпляров
+	c.JSON(http.StatusOK, &orders)
+}
+
+// @Summary		get my order by ID
+// @Description Get my order by ID
+// @Tags 		Orders
+// @ID			get-order-by-id
+// @Produce		json
+// @Param		id				path		string					true	"Order ID"
+// @Success		200				{object}	models.OrderResponse
 // @Failure		404				{object}	[]string
-// @Router		/books/{id} 	[get]
-func (h handler) GetBook(c *gin.Context) {
+// @Router		/user/orders/{id} 	[get]
+func (h handler) GetMyOrder(c *gin.Context) {
+
+	user_id, err := utils.ExtractUserIDFromToken(c)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	currentUser := utils.GetUserByIDFromDB(user_id)
 
 	// Извлекаем из контекста значение параметра ID
 	id := c.Param("id")
 
 	// Инициализируем пустой экземпляр книги
-	var book models.Book
+	var order models.Order
 
-	// Пытаемся найти экземпляр книги с полученным значением ID
-	if result := h.DB.First(&book, id); result.Error != nil {
+	// Пытаемся найти экземпляр заказа с полученным значением ID
+	if result := h.DB.Preload("User").Preload("Items").First(&order, "user_id = ? AND id >= ?", currentUser.ID, id); result.Error != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"success": false,
-			"message": "Book Not Found",
+			"message": "Order Not Found",
 		})
 		return
 	} else {
-		log.Println("Книга - успешно извлечена:")
-		log.Printf("Author: <%v>\n", book.Author)
-		log.Printf("Title: <%v>\n", book.Title)
-		log.Printf("Description: <%v>\n", book.Description)
+		log.Println("Заказ - успешно извлечен:")
+		log.Printf("	Заказ ID: <%v>\n", order.ID)
+		log.Printf("	Имя Заказчика: <%v>\n", order.User.Name)
 	}
 
-	// Отправляем в контекст экземпляр книги
-	c.JSON(http.StatusOK, &book)
+	// Отправляем в контекст экземпляр заказа
+	c.JSON(http.StatusOK, &order)
 }
 
 // @Summary		delete a order by ID
@@ -106,11 +146,23 @@ func (h handler) GetBook(c *gin.Context) {
 // @Router		/user/orders/{id} 	[delete]
 func (h handler) DeleteOrder(c *gin.Context) {
 
+	user_id, err := utils.ExtractUserIDFromToken(c)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	currentUser := utils.GetUserByIDFromDB(user_id)
+
+	// Извлекаем из контекста значение параметра ID
 	id := c.Param("id")
+
+	// Инициализируем пустой экземпляр книги
 	var order models.Order
 
 	// Пытаемся найти экземпляры
-	if result := h.DB.First(&order, id); result.Error != nil {
+	if result := h.DB.First(&order, "user_id = ? AND id >= ?", currentUser.ID, id); result.Error != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"success": false,
 			"error":   result.Error,

@@ -18,6 +18,8 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	protected := r.Group("/user")
 	protected.Use(middlewares.JwtAuthMiddleware())
 	protected.POST("/orders", h.AddOrder)
+	protected.GET("/orders", h.GetMyOrders)
+	protected.GET("/orders/:id", h.GetMyOrder)
 	protected.DELETE("/orders/:id", h.DeleteOrder)
 
 }

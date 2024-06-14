@@ -19,6 +19,15 @@ definitions:
       title:
         type: string
     type: object
+  models.OrderResponse:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      updatedAt:
+        type: string
+    type: object
   models.UpdateBookRequestBody:
     properties:
       author:
@@ -230,6 +239,21 @@ paths:
       tags:
       - Books
   /user/orders:
+    get:
+      description: Get all my orders from db
+      operationId: get-all-my-orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.OrderResponse'
+            type: array
+      summary: get all my orders
+      tags:
+      - Orders
     post:
       consumes:
       - application/json
@@ -276,6 +300,31 @@ paths:
               type: string
             type: array
       summary: delete a order by ID
+      tags:
+      - Orders
+    get:
+      description: Get my order by ID
+      operationId: get-order-by-id
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.OrderResponse'
+        "404":
+          description: Not Found
+          schema:
+            items:
+              type: string
+            type: array
+      summary: get my order by ID
       tags:
       - Orders
   /users/login:
