@@ -10,6 +10,7 @@ import (
 	"github.com/XanderMoroz/BookStore/db"
 
 	"github.com/XanderMoroz/BookStore/internal/controllers/books"
+	"github.com/XanderMoroz/BookStore/internal/controllers/orders"
 	"github.com/XanderMoroz/BookStore/internal/controllers/users"
 
 	_ "github.com/XanderMoroz/BookStore/docs"
@@ -49,6 +50,8 @@ func main() {
 	// // Регистрируем маршруты приложений
 	books.RegisterRoutes(r, h)
 	users.RegisterRoutes(r, h)
+	orders.RegisterRoutes(r, h)
+
 	// Запускаем сервер на указанном порту
 	if err := r.Run(":" + env.AppPort); err != nil {
 		log.Fatal(err)

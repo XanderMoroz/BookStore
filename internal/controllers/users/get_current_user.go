@@ -12,7 +12,7 @@ import (
 // @Tags 		Authentication
 // @ID			get-current-user
 // @Produce		json
-// @Success		200		{object}	UserResponse
+// @Success		200		{object}	models.UserResponse
 // @Router		/api/admin/user [get]
 func (h handler) CurrentUser(c *gin.Context) {
 

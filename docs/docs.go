@@ -257,6 +257,82 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/orders": {
+            "post": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Creating Order in DB with given request body",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "create new order",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/orders/{id}": {
+            "delete": {
+                "description": "Delete a order by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "delete a order by ID",
+                "operationId": "delete-order-by-id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/users/login": {
             "post": {
                 "description": "Authenticate User in app with given request body",
@@ -383,6 +459,9 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "published_at": {
+                    "type": "integer"
+                },
                 "title": {
                     "type": "string"
                 }
@@ -396,6 +475,9 @@ const docTemplate = `{
                 },
                 "description": {
                     "type": "string"
+                },
+                "published_at": {
+                    "type": "integer"
                 },
                 "title": {
                     "type": "string"

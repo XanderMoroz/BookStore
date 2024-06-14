@@ -14,6 +14,8 @@ definitions:
         type: string
       description:
         type: string
+      published_at:
+        type: integer
       title:
         type: string
     type: object
@@ -23,6 +25,8 @@ definitions:
         type: string
       description:
         type: string
+      published_at:
+        type: integer
       title:
         type: string
     type: object
@@ -225,6 +229,55 @@ paths:
       summary: update book by ID
       tags:
       - Books
+  /user/orders:
+    post:
+      consumes:
+      - application/json
+      description: Creating Order in DB with given request body
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - JWT: []
+      summary: create new order
+      tags:
+      - Orders
+  /user/orders/{id}:
+    delete:
+      description: Delete a order by ID
+      operationId: delete-order-by-id
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            items:
+              type: string
+            type: array
+      summary: delete a order by ID
+      tags:
+      - Orders
   /users/login:
     post:
       consumes:

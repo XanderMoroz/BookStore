@@ -12,8 +12,8 @@ import (
 type Order struct {
 	// gorm.Model
 	ID        uuid.UUID `gorm:"type:char(36);primary_key" json:"ID"` // Уникальный идентификатор
-	User      User      `json:"author"`
-	UserID    uuid.UUID `gorm:"type:uuid;not null" json:"author_id"`
+	User      User      `json:"user"`
+	UserID    uuid.UUID `gorm:"type:uuid;not null" json:"user_id"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 	DeletedAt gorm.DeletedAt
