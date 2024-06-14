@@ -50,7 +50,7 @@ func Init() *gorm.DB {
 	DB = db
 
 	log.Printf("Устанавливаем миграции в БД...")
-	db.AutoMigrate(&models.User{}, &models.Book{})
+	db.AutoMigrate(&models.User{}, &models.Book{}, &models.Order{}, &models.Item{})
 	if err != nil {
 		panic("failed to perform migrations: " + err.Error())
 	}

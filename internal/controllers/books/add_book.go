@@ -1,9 +1,11 @@
 package books
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 
 	"github.com/XanderMoroz/BookStore/internal/models"
 )
@@ -39,10 +41,17 @@ func (h handler) AddBook(c *gin.Context) {
 	// Создаем новый экземпляр книги
 	var book models.Book
 
-	// Присваиваем ему значения из тела запроса
+	// Присваиваем ему значения из тела запроса и уникальный ID
+	book.ID = uuid.New()
 	book.Title = body.Title
 	book.Author = body.Author
 	book.Description = body.Description
+
+	log.Printf("Добавляем в БД новую книгу:")
+	log.Printf("	ID: <%+v>\n", book.ID)
+	log.Printf("	Title: <%+v>\n", book.Title)
+	log.Printf("	Author: <%+v>\n", book.Author)
+	log.Printf("	Description: <%s>\n", book.Description)
 
 	// Пытаемся создать экземпляр книги
 	if result := h.DB.Create(&book); result.Error != nil {
