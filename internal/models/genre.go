@@ -3,14 +3,15 @@ package models
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 // Структура статьи
 type Genre struct {
 	gorm.Model
-	ID    uint64 `gorm:"primary_key;auto_increment" json:"ID"` // Уникальный идентификатор
-	Title string `gorm:"size:255;not null" json:"title"`       // Название категории
+	ID    uuid.UUID `gorm:"type:char(255);primary_key" json:"id"` // Уникальный идентификатор
+	Title string    `gorm:"size:255;not null" json:"title"`       // Название категории
 	// Список статей связанных с категорией
 	Books []*Book `gorm:"many2many:book_genres;"`
 }
@@ -33,6 +34,6 @@ type GenreResponse struct {
 // CreateCategoryBody
 // @Description Тело запроса для создания жанра
 type AddBookToGenreBody struct {
-	ArticleID    string `json:"article_id" validate:"required"`
-	CategoryName string `json:"category_name" validate:"required"`
+	BookID string `json:"book_id" validate:"required"`
+	Genre  string `json:"genre" validate:"required"`
 }
