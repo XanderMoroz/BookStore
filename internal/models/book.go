@@ -18,7 +18,7 @@ type Book struct {
 	UpdatedAt   time.Time `gorm:"autoUpdateTime"`
 	DeletedAt   gorm.DeletedAt
 	// Категории к которым принадлежит статья
-	// Genries []*Genry `gorm:"many2many:book_genries;"`
+	Genres []*Genre `gorm:"many2many:book_genres;"`
 }
 
 type BookResponse struct {

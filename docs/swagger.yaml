@@ -19,6 +19,41 @@ definitions:
       title:
         type: string
     type: object
+  models.BookToGenreBody:
+    description: Тело запроса для связываня книги с жанром
+    properties:
+      book_id:
+        type: string
+      genre:
+        type: string
+    required:
+    - book_id
+    - genre
+    type: object
+  models.CreateGenreBody:
+    description: Тело запроса для создания жанра
+    properties:
+      title:
+        type: string
+    required:
+    - title
+    type: object
+  models.GenreResponse:
+    description: Тело ответа после извлечения жанра
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - createdAt
+    - title
+    - updatedAt
+    type: object
   models.OrderResponse:
     properties:
       createdAt:
@@ -238,6 +273,99 @@ paths:
       summary: update book by ID
       tags:
       - Books
+  /genres:
+    get:
+      description: Get all genres from db
+      operationId: get-all-genres
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.GenreResponse'
+            type: array
+      summary: get all genres
+      tags:
+      - Genres
+    post:
+      consumes:
+      - application/json
+      description: Creating Genre in DB with given request body
+      parameters:
+      - description: Введите название жанра
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateGenreBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: create new genre
+      tags:
+      - Genres
+  /genres/add_book:
+    post:
+      consumes:
+      - application/json
+      description: Adding Book to Genre in DB with given request body
+      parameters:
+      - description: Введите ID книги и название жанра
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.BookToGenreBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: add book to genre
+      tags:
+      - Genres
+  /genres/remove_book:
+    post:
+      consumes:
+      - application/json
+      description: Deleting Book from Genre in DB with given request body
+      parameters:
+      - description: Введите ID Книги и название жанра
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.BookToGenreBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: delete book from genre
+      tags:
+      - Genres
   /user/orders:
     get:
       description: Get all my orders from db

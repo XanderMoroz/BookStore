@@ -249,6 +249,148 @@
                 }
             }
         },
+        "/genres": {
+            "get": {
+                "description": "Get all genres from db",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Genres"
+                ],
+                "summary": "get all genres",
+                "operationId": "get-all-genres",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.GenreResponse"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creating Genre in DB with given request body",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Genres"
+                ],
+                "summary": "create new genre",
+                "parameters": [
+                    {
+                        "description": "Введите название жанра",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateGenreBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/genres/add_book": {
+            "post": {
+                "description": "Adding Book to Genre in DB with given request body",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Genres"
+                ],
+                "summary": "add book to genre",
+                "parameters": [
+                    {
+                        "description": "Введите ID книги и название жанра",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.BookToGenreBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/genres/remove_book": {
+            "post": {
+                "description": "Deleting Book from Genre in DB with given request body",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Genres"
+                ],
+                "summary": "delete book from genre",
+                "parameters": [
+                    {
+                        "description": "Введите ID Книги и название жанра",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.BookToGenreBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/orders": {
             "get": {
                 "description": "Get all my orders from db",
@@ -514,6 +656,57 @@
                     "type": "integer"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.BookToGenreBody": {
+            "description": "Тело запроса для связываня книги с жанром",
+            "type": "object",
+            "required": [
+                "book_id",
+                "genre"
+            ],
+            "properties": {
+                "book_id": {
+                    "type": "string"
+                },
+                "genre": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CreateGenreBody": {
+            "description": "Тело запроса для создания жанра",
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.GenreResponse": {
+            "description": "Тело ответа после извлечения жанра",
+            "type": "object",
+            "required": [
+                "createdAt",
+                "title",
+                "updatedAt"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updatedAt": {
                     "type": "string"
                 }
             }

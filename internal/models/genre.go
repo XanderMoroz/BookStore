@@ -7,22 +7,19 @@ import (
 	"gorm.io/gorm"
 )
 
-// Структура статьи
+// Структура жанра
 type Genre struct {
 	gorm.Model
-	ID    uuid.UUID `gorm:"type:char(255);primary_key" json:"id"` // Уникальный идентификатор
-	Title string    `gorm:"size:255;not null" json:"title"`       // Название категории
-	// Список статей связанных с категорией
-	Books []*Book `gorm:"many2many:book_genres;"`
+	ID    uuid.UUID `gorm:"type:char(255);primary_key" json:"ID"`       // Уникальный идентификатор
+	Title string    `gorm:"size:255;not null;uniqueIndex" json:"title"` // Название категории
+	Books []*Book   `gorm:"many2many:book_genres;"`                     // Список статей связанных с категорией
 }
 
-// CreateCategoryBody
 // @Description Тело запроса для создания жанра
 type CreateGenreBody struct {
 	Title string `json:"title" validate:"required"`
 }
 
-// GenreResponse
 // @Description Тело ответа после извлечения жанра
 type GenreResponse struct {
 	ID        string    `json:"id"`
@@ -31,9 +28,8 @@ type GenreResponse struct {
 	UpdatedAt time.Time `json:"updatedAt" validate:"required"`
 }
 
-// CreateCategoryBody
-// @Description Тело запроса для создания жанра
-type AddBookToGenreBody struct {
+// @Description Тело запроса для связываня книги с жанром
+type BookToGenreBody struct {
 	BookID string `json:"book_id" validate:"required"`
 	Genre  string `json:"genre" validate:"required"`
 }

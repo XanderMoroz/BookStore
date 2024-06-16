@@ -6,31 +6,26 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 
+	"github.com/XanderMoroz/BookStore/db"
 	"github.com/XanderMoroz/BookStore/internal/models"
+	"github.com/XanderMoroz/BookStore/internal/utils"
 )
-
-// Формируем структуру обработчика базы данных
-type handler struct {
-	DB *gorm.DB
-}
 
 // @Summary        create new genre
 // @Description    Creating Genre in DB with given request body
-// @Tags           Genges
+// @Tags           Genres
 // @Accept         json
 // @Produce        json
 // @Param          request         		body        models.CreateGenreBody    true    "Введите название жанра"
 // @Success        201              	{string}    string
 // @Failure        400              	{string}    string    "Bad Request"
-// @Router         /categories 			[post]
+// @Router         /genres 				[post]
 func (h handler) CreateNewGenre(c *gin.Context) {
-	// body := new(models.CreateGenreBody)
-	body := models.CreateGenreBody{}
+
+	body := new(models.CreateGenreBody)
 	// Пытаемся получить тело запроса
-	// if err := c.BindJSON(body); err != nil {
-	if err := c.BindJSON(&body); err != nil {
+	if err := c.BindJSON(body); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
@@ -55,113 +50,99 @@ func (h handler) CreateNewGenre(c *gin.Context) {
 	c.JSON(http.StatusCreated, &newGenre)
 }
 
-// // @Summary		get all genres
-// // @Description Get all genres from db
-// // @Tags 		Categories
-// // @ID			get-all-genres
-// // @Produce		json
-// // @Success		200		{object}	[]models.GenreResponse
-// // @Router		/categories [get]
-// func GetAllGenres(c *fiber.Ctx) error {
+// @Summary		get all genres
+// @Description Get all genres from db
+// @Tags 		Genres
+// @ID			get-all-genres
+// @Produce		json
+// @Success		200		{object}	[]models.GenreResponse
+// @Router		/genres [get]
+func (h handler) GetAllGenres(c *gin.Context) {
 
-// 	categories := utils.GetCategoriesFromDB()
+	genres := utils.GetAllGenresFromDB()
 
-// 	if len(categories) == 0 {
-// 		return c.Status(http.StatusNoContent).JSON(fiber.Map{
-// 			"status":  "error",
-// 			"message": "categories not found",
-// 			"data":    nil,
-// 		})
-// 	}
+	if len(genres) == 0 {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	c.JSON(http.StatusOK, &genres)
+}
 
-// 	// c.Status(http.StatusOK)
-// 	return c.Status(http.StatusOK).JSON(fiber.Map{
-// 		"status":  "success",
-// 		"message": "Articles Found",
-// 		"data":    categories,
-// 	})
-// }
+// @Summary        add book to genre
+// @Description    Adding Book to Genre in DB with given request body
+// @Tags           Genres
+// @Accept         json
+// @Produce        json
+// @Param          request         			body        models.BookToGenreBody    true    "Введите ID книги и название жанра"
+// @Success        201              		{string}    string
+// @Failure        400              		{string}    string    "Bad Request"
+// @Router         /genres/add_book 	[post]
+func (h handler) AddBookToGenre(c *gin.Context) {
 
-// // @Summary        add book to category
-// // @Description    Adding Article to Category in DB with given request body
-// // @Tags           Genre
-// // @Accept         json
-// // @Produce        json
-// // @Param          request         			body        models.AddArticleToCategoryBody    true    "Введите ID статьи и название категории"
-// // @Success        201              		{string}    string
-// // @Failure        400              		{string}    string    "Bad Request"
-// // @Router         /categories/add_article 	[post]
-// func AddArticleToCategory(c *fiber.Ctx) error {
+	db := db.DB
 
-// 	db := database.DB
+	body := new(models.BookToGenreBody)
 
-// 	body := new(models.AddArticleToCategoryBody)
+	// Извлекаем тело запроса
+	if err := c.BindJSON(body); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
 
-// 	// Извлекаем тело запроса
-// 	err := c.BodyParser(body)
-// 	if err != nil {
-// 		// Обрабатываем ошибку
-// 		return c.Status(500).JSON(fiber.Map{
-// 			"status":  "error",
-// 			"message": "Проверьте данные",
-// 			"data":    err,
-// 		})
-// 	}
-// 	log.Println("Запрос успешно обработан обработан")
+	log.Println("Запрос успешно обработан обработан")
 
-// 	article := utils.GetArticleByIDFromDB(body.ArticleID)
+	book := utils.GetBookByIDFromDB(body.BookID)
 
-// 	category := utils.GetCategoryByNameFromDB(body.CategoryName)
+	genre := utils.GetGenreByNameFromDB(body.Genre)
 
-// 	db.Model(&category).Association("Articles").Append(&article)
-// 	db.Model(&article).Association("Categories").Append(&category)
+	db.Model(&genre).Association("Books").Append(&book)
+	db.Model(&book).Association("Genres").Append(&genre)
 
-// 	// Возвращаем категорию
-// 	return c.Status(201).JSON(fiber.Map{
-// 		"status":  "success",
-// 		"message": "Article added to Category",
-// 		// "data":    newCategory,
-// 	})
-// }
+	// Возвращаем книгу
+	c.JSON(http.StatusOK, &book)
+}
 
-// // @Summary        delete article from category
-// // @Description    Deleting Article from Category in DB with given request body
-// // @Tags           Categories
-// // @Accept         json
-// // @Produce        json
-// // @Param          request         			body        models.AddArticleToCategoryBody    true    "Введите ID статьи и название категории"
-// // @Success        201              		{string}    string
-// // @Failure        400              		{string}    string    "Bad Request"
-// // @Router         /categories/remove_article 	[post]
-// func DeleteArticleFromCategory(c *fiber.Ctx) error {
+// @Summary        delete book from genre
+// @Description    Deleting Book from Genre in DB with given request body
+// @Tags           Genres
+// @Accept         json
+// @Produce        json
+// @Param          request         			body        models.BookToGenreBody    true    "Введите ID Книги и название жанра"
+// @Success        201              		{string}    string
+// @Failure        400              		{string}    string    "Bad Request"
+// @Router         /genres/remove_book 	[post]
+func (h handler) RemoveBookFromGenre(c *gin.Context) {
 
-// 	db := database.DB
+	db := db.DB
 
-// 	body := new(models.AddArticleToCategoryBody)
+	body := new(models.BookToGenreBody)
 
-// 	// Извлекаем тело запроса
-// 	err := c.BodyParser(body)
-// 	if err != nil {
-// 		// Обрабатываем ошибку
-// 		return c.Status(500).JSON(fiber.Map{
-// 			"status":  "error",
-// 			"message": "Проверьте данные",
-// 			"data":    err,
-// 		})
-// 	}
-// 	log.Println("Запрос успешно обработан обработан")
+	// Извлекаем тело запроса
+	if err := c.BindJSON(body); err != nil {
 
-// 	article := utils.GetArticleByIDFromDB(body.ArticleID)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"message": "Bad Request Check your data",
+			"data":    err,
+		})
+		// c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
 
-// 	category := utils.GetCategoryByNameFromDB(body.CategoryName)
+	log.Println("Запрос успешно обработан обработан")
 
-// 	// result := db.Create(&newCategory)
-// 	db.Model(&category).Association("Articles").Delete(&article)
-// 	db.Model(&article).Association("Categories").Delete(&category)
+	book := utils.GetBookByIDFromDB(body.BookID)
 
-// 	// Возвращаем категорию
-// 	return c.Status(201).JSON(fiber.Map{
-// 		"status":  "success",
-// 		"message": "Article delete from Category",
-// 	})
-// }
+	genre := utils.GetGenreByNameFromDB(body.Genre)
+
+	// result := db.Create(&newCategory)
+	db.Model(&genre).Association("Books").Delete(&book)
+	db.Model(&book).Association("Genres").Delete(&genre)
+
+	// Возвращаем категорию
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "Book remove from Genre",
+		"data":    &book,
+	})
+}

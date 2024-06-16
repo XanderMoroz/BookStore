@@ -10,6 +10,7 @@ import (
 	"github.com/XanderMoroz/BookStore/db"
 
 	"github.com/XanderMoroz/BookStore/internal/controllers/books"
+	"github.com/XanderMoroz/BookStore/internal/controllers/genres"
 	"github.com/XanderMoroz/BookStore/internal/controllers/orders"
 	"github.com/XanderMoroz/BookStore/internal/controllers/users"
 
@@ -49,6 +50,7 @@ func main() {
 
 	// // Регистрируем маршруты приложений
 	books.RegisterRoutes(r, h)
+	genres.RegisterRoutes(r, h)
 	users.RegisterRoutes(r, h)
 	orders.RegisterRoutes(r, h)
 

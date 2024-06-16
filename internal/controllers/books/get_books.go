@@ -21,7 +21,7 @@ func (h handler) GetBooks(c *gin.Context) {
 	var books []models.Book
 
 	// Пытаемся найти экземпляры
-	if result := h.DB.Find(&books); result.Error != nil {
+	if result := h.DB.Preload("Genres").Find(&books); result.Error != nil {
 		c.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
