@@ -23,7 +23,7 @@ func GetAllGenresFromDB() []models.Genre {
 
 	log.Println("Список жанров — успешно извлечен:")
 	for _, genre := range genres {
-		log.Printf("Genre ID: <%d>, Title: <%s>\n", genre.ID, genre.Title)
+		log.Printf("Genre ID: <%s>, Title: <%s>\n", genre.ID, genre.Title)
 	}
 	return genres
 }
@@ -47,7 +47,7 @@ func GetGenreByNameFromDB(name string) models.Genre {
 	}
 
 	log.Println("Жанр — успешно извлечен:")
-	log.Printf("Genre ID: <%d>, Title: <%s>\n", genre.ID, genre.Title)
+	log.Printf("Genre ID: <%s>, Title: <%s>\n", genre.ID, genre.Title)
 
 	return genre
 }

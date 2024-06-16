@@ -76,7 +76,7 @@ func (h handler) GetAllGenres(c *gin.Context) {
 // @Param          request         			body        models.BookToGenreBody    true    "Введите ID книги и название жанра"
 // @Success        201              		{string}    string
 // @Failure        400              		{string}    string    "Bad Request"
-// @Router         /genres/add_book 	[post]
+// @Router         /genres/add_book 		[post]
 func (h handler) AddBookToGenre(c *gin.Context) {
 
 	db := db.DB

@@ -31,6 +31,7 @@ type AddBookRequestBody struct {
 // @Security		JWT
 // @Router         /books 			[post]
 func (h handler) AddBook(c *gin.Context) {
+
 	body := AddBookRequestBody{}
 
 	// Пытаемся получить тело запроса
