@@ -47,11 +47,7 @@ Go Blog - пример backend-сервисова на основе `Gin Gonic`,
 
 <summary>ДЕТАЛЬНАЯ СХЕМА БАЗЫ ДАННЫХ</summary>
 
-  
-
-![Screen Shot]
-
-  
+![Screen Shot](docs/extras/erd.png)
 
 </details>
 
