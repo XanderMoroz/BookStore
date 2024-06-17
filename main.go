@@ -21,7 +21,7 @@ import (
 
 //	@title			BookStore APIs
 //	@version		1.0
-//	@description	Testing Swagger APIs.
+//	@description	REST API of BookStore making on Gin Gonic.
 //	@termsOfService	http://swagger.io/terms/
 // 	@contact.name API Support
 //	@contact.url	http://www.swagger.io/support

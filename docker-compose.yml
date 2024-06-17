@@ -1,18 +1,18 @@
 version: '3'
 
 services:
-  app:
-    container_name: go_bookstore_app                                 # Название контейнера
-    build: .                                                    # Образ контейнера берем из текущей папки
-    ports:                                                      # Связываем порты хоста:контейнера
-      - 8082:8082 
-    restart: on-failure
-    volumes:                                                    # Монтируем том с приложением
-      - api:/usr/src/app/
-    depends_on:
-      - mysql
-    networks:                                                   # Подключаем к сети
-      - go_bookstore_network
+  # app:
+  #   container_name: go_bookstore_app                                 # Название контейнера
+  #   build: .                                                    # Образ контейнера берем из текущей папки
+  #   ports:                                                      # Связываем порты хоста:контейнера
+  #     - 8082:8082 
+  #   restart: on-failure
+  #   volumes:                                                    # Монтируем том с приложением
+  #     - api:/usr/src/app/
+  #   depends_on:
+  #     - mysql
+  #   networks:                                                   # Подключаем к сети
+  #     - go_bookstore_network
 
   mysql:
     container_name: "mysql"
@@ -32,8 +32,8 @@ services:
       # - "mysql/log:/var/log/mysql"
     security_opt:
       - seccomp:unconfined
-    networks:                                                   # Подключаем к сети
-      - go_bookstore_network
+    # networks:                                                   # Подключаем к сети
+    #   - go_bookstore_network
 
   phpmyadmin:
     image: "phpmyadmin"
@@ -46,16 +46,16 @@ services:
       - MAX_EXECUTION_TIME=30000
       - UPLOAD_LIMIT=2048M
       - MEMORY_LIMIT=2048M
-    networks:                                                   # Подключаем к сети
-      - go_bookstore_network
+    # networks:                                                   # Подключаем к сети
+    #   - go_bookstore_network
   
 
 # Список томов
-volumes:
-  api:
+# volumes:
+#   api:
 #   db:
 
 # Настройки сети (чтоб контейнеры могли обмениваться данными)
-networks:
-  go_bookstore_network:
-    driver: bridge
+# networks:
+#   go_bookstore_network:
+#     driver: bridge
