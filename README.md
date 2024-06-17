@@ -75,29 +75,30 @@ git clone https://github.com/XanderMoroz/goBookStore.git
 
 ```sh
 
-################################
+################################################################################
 # APP Config
 # Automatically setup app variables
-################################
+################################################################################
 APP_ENV="DEV"
 APP_PORT="8082"
 SERVER_ADDRESS=""
 ACCESS_TOKEN_SECRET="nduenvrvneu8957hhoiif932ejcp92nf9ne7h3p2982jijpkm2[jw[8h"
 ACCESS_TOKEN_EXPIRY_HOUR=1
-################################
+################################################################################
 # MYSQL Config
 # Automatically create database and user
-################################
+################################################################################
 DB_DRIVER="MYSQL"
 MYSQL_ROOT_PASSWORD=rootpwd
 MYSQL_DATABASE=my_db
 MYSQL_USER=admin
 MYSQL_PASSWORD=adminpassword
 MYSQL_PORT=3306         
-MYSQL_HOST=127.0.0.1                    # С docker
-################################
+MYSQL_HOST=127.0.0.1            # Без docker             
+MYSQL_HOST="mysql"              # С docker
+################################################################################
 # PHPMYADMIN Config
-################################
+################################################################################
 phpmyadminPort=8090
 MYSQL_IP_Address=mysql 
 
@@ -150,11 +151,11 @@ MYSQL_PASSWORD=adminpassword
   - Email or username: admin
   - Password: admin
 
-![Screen Shot](docs/extras/geafana_auth_01.jpg)
+![Screen Shot](docs/extras/grafana_auth_01.jpg)
 
 2. После система потребует придумать новый пароль (это необязательно).
 
-![Screen Shot](docs/extras/geafana_auth_02.jpg)
+![Screen Shot](docs/extras/grafana_auth_02.jpg)
 
 3. Мы авторизованы в сервисе Grafana. Добавим новое подключение...
 
