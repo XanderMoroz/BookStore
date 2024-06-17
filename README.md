@@ -37,7 +37,7 @@ Go Blog - пример backend-сервисова на основе `Gin Gonic`,
 База данных содержит 5 моделей:
 
   - **Пользователь** (User),
-  - **Жанр книги** (Genry),
+  - **Жанр книги** (Genrе),
   - **Книга** (Book),
   - **Заказ** (Order),
   - **Позиция в заказе** (Item)
@@ -115,43 +115,28 @@ sudo docker-compose up --build
 
 2.3 Сервисы доступны для эксплуатации:
 
-- Приложение Go `Gin APP`: http://127.0.0.1:8080/                  
-- API + Документация `Swagger`: http://127.0.0.1:8080/swagger/index.html  
-- Интерфейс для управления БД MySQL `phpMyAdmin`: http://127.0.0.1:5050                    
+- Приложение Go `Gin APP`: http://127.0.0.1:8082/                  
+- API + Документация `Swagger`: http://127.0.0.1:8082/swagger/index.html  
+- Интерфейс для управления БД MySQL `phpMyAdmin`: http://127.0.0.1:8090                    
 
 
 3. ### Дополнительные настройки 
 
 <details>
-<summary>Как подключить PGAdmin4 к БД? </summary>
+<summary>Как подключить phpMyAdmin к БД? </summary>
 
 
-1. Заходим в браузер по адресу http://127.0.0.1:5050 и вводим данные из .env
-
-```bash
-PGADMIN_DEFAULT_EMAIL=xander@admin.com
-PGADMIN_DEFAULT_PASSWORD=pwd123
-```
-![Screen Shot](docs/extras/pgadmin_auth.jpg)
-
-2. Заполняем Имя сервера (обязательно) 
-
-![Screen Shot](docs/extras/pgadmin_settings_01.jpg)
-
-3. Извлекаем адрес хоста, на котором расположилась БД Postgres
+1. Заходим в браузер по адресу http://127.0.0.1:8090 и вводим данные из .env
 
 ```bash
-sudo docker inspect go_blog_postgres | grep IPAddress
+MYSQL_USER=admin
+MYSQL_PASSWORD=adminpassword
 ```
-![Screen Shot](docs/extras/pgadmin_get_host.jpg)
+![Screen Shot](docs/extras/phpmyadmin_auth.png)
 
-4. Заполняем Адрес сервера данными хоста БД Postgres и пароль (из файла .env)
+2. Готово
 
-![Screen Shot](docs/extras/pgadmin_settings_02.jpg)
-
-6. Готово
-
-![Screen Shot](docs/extras/pgadmin_ready.jpg)
+![Screen Shot](docs/extras/phpmyadmin_ready.png)
 
 </details>
 
@@ -217,7 +202,7 @@ export PATH=$PATH:$(go env GOPATH)/bin
 3.3 Генерируете новый вариант документации
 
 ```bash
-swag init -g main.go
+swag init
 ```
 </details>
 
