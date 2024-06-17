@@ -23,9 +23,9 @@
 
 ## <a name="what-is-this"> 🌀 Описание проекта</a>
 
-Go Blog - пример backend-сервисова на основе `Gin Gonic`, Интерфейс API `Swagger`. База данных - `MySQL`. ORM - `GORM`. Сборка - `Docker Compose`.
+Go Blog - пример backend-сервисова на основе `Gin Gonic`, Интерфейс API `Swagger`. База данных - `MySQL`. ORM - `GORM`. Мониторинг - `Prometheus`. Метрики хоста - `Node Exporter`. Визуализация - `Grafana`. Сборка - `Docker Compose`.
 
-![Screen Shot](docs/extras/schema.jpg)
+![Screen Shot](docs/extras/schema.png)
 
 ## <a name="api_docs"> 📈 Краткая документация API</a>
 
