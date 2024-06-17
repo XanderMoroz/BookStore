@@ -20,7 +20,7 @@ RUN go mod download
 COPY . .
 
 # Компилируем приложение в один бинарный файл
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o cmd/main .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
 # Собираем второй образ на основе Linux alpine (from scratch)
 FROM alpine:latest
@@ -33,8 +33,8 @@ WORKDIR /root/
 COPY --from=builder /app/main .
 COPY --from=builder /app/.env .       
 
-# Открываем порт 3000 
-EXPOSE 3000
+# Открываем порт 8082 
+EXPOSE 8082
 
 # Запускаем бинарник приложения
-CMD ["./cmd/main"]
+CMD ["./main"]
