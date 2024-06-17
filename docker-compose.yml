@@ -49,6 +49,64 @@ services:
     # networks:                                                   # Подключаем к сети
     #   - go_bookstore_network
   
+#   prometheus:
+#     container_name: prometheus                                  # Система мониторинга
+#     image: prom/prometheus:latest
+#     volumes:  
+#       - ./etc/prometheus:/etc/prometheus/                       # Монтируем том с данными из БД
+#     hostname: prometheus
+#     command:
+#       - --config.file=/etc/prometheus/prometheus.yml            # Устанавливаем конфигурацию из файла prometheus.yml
+#     ports:
+#       - 9090:9090                                               # Связываем порты хоста:контейнера 
+#     restart: unless-stopped
+#     environment:
+#       TZ: "Europe/Moscow"
+#     networks:
+#       - go_blog_network
+
+# # Извлекает данные хоста (cpu, memory) 
+#   node-exporter:
+#     container_name: exporter
+#     image: prom/node-exporter
+#     volumes:
+#       - /proc:/host/proc:ro
+#       - /sys:/host/sys:ro
+#       - /:/rootfs:ro
+#     hostname: exporter
+#     command:
+#       - --path.procfs=/host/proc
+#       - --path.sysfs=/host/sys
+#       - --collector.filesystem.ignored-mount-points
+#       - ^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)
+#     ports:
+#       - 9100:9100
+#     restart: unless-stopped
+#     environment:
+#       TZ: "Europe/Moscow"
+#     networks:
+#       - go_blog_network
+
+#   # Визуализация данных на дашборде
+#   grafana:
+#     image: grafana/grafana
+#     user: root
+#     depends_on:
+#       - prometheus
+#     ports:
+#       - 3000:3000
+#     volumes:
+#       - ./etc/grafana:/var/lib/grafana
+#       - ./etc/grafana/provisioning/:/etc/grafana/provisioning/
+#     container_name: grafana
+#     hostname: grafana
+#     restart: unless-stopped
+#     environment:
+#       TZ: "Europe/Moscow"
+#     networks:
+#       - go_blog_network
+
+
 
 # Список томов
 # volumes:
